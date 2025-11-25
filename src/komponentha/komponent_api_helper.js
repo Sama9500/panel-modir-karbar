@@ -1,6 +1,7 @@
 
 // پایه آدرس API
-export const apiPaye = "https://my-api.onrender.com"
+export const apiPaye = "https://panel.contentgen.ir"
+
 
 // تابع کمکی برای اطمینان از داشتن پیشوند /api
 function sakhtRah(url) {
