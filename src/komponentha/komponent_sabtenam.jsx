@@ -6,6 +6,7 @@ import KomponentVorood from "./komponent_vorood.jsx"
 export default function KomponentSabtenam() {
   const [email, setEmail] = useState("")
   const [ramzOboor, setRamzOboor] = useState("")
+  const [ramzOboorTaeid, setRamzOboorTaeid] = useState("")
   const [payamSabtenam, setPayamSabtenam] = useState("")
   const [darHaleErsaal, setDarHaleErsaal] = useState(false)
 
@@ -15,7 +16,7 @@ export default function KomponentSabtenam() {
     roydad.preventDefault()
     setPayamSabtenam("")
 
-    if (!email || !ramzOboor) {
+    if (!email || !ramzOboor || !ramzOboorTaeid) {
       setPayamSabtenam("لطفا همه فیلدها را پر کنید")
       return
     }
@@ -27,6 +28,11 @@ export default function KomponentSabtenam() {
 
     if (ramzOboor.length < 6) {
       setPayamSabtenam("رمز عبور باید حداقل 6 کاراکتر باشد")
+      return
+    }
+
+    if (ramzOboor !== ramzOboorTaeid) {
+      setPayamSabtenam("رمز عبور و تایید آن یکسان نیست")
       return
     }
 
@@ -74,6 +80,14 @@ export default function KomponentSabtenam() {
             placeholder="رمز عبور"
             value={ramzOboor}
             onChange={(roydad) => setRamzOboor(roydad.target.value)}
+            className="input-ziba focus:ring-purple-500"
+          />
+
+          <input
+            type="password"
+            placeholder="تایید رمز عبور"
+            value={ramzOboorTaeid}
+            onChange={(roydad) => setRamzOboorTaeid(roydad.target.value)}
             className="input-ziba focus:ring-purple-500"
           />
 
