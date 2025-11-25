@@ -1,0 +1,32 @@
+
+
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --rang-cyan: #06b6d4;   /* cyan-500 */
+  --rang-purple: #7c3aed; /* purple-600 */
+  --rang-gray-900: #111827;
+  --rang-gray-800: #1f2937;
+}
+
+body {
+  font-family: 'Vazirmatn', sans-serif;
+  background-color: var(--rang-gray-900);
+  color: #f9fafb;
+}
+
+.kart-ziba {
+  @apply bg-gray-800 p-6 rounded-xl shadow-xl hover:scale-105 transition;
+}
+
+.dokme-gradient {
+  @apply bg-gradient-to-r from-cyan-500 to-purple-600 text-white px-6 py-2 rounded-lg shadow-lg hover:scale-105 transition;
+}
+
+.input-ziba {
+  @apply border border-gray-700 p-3 rounded bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2;
+}
