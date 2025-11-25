@@ -4,7 +4,8 @@ import React from "react"
 import { BrowserRouter as Router, Routes, Route, Navigate, NavLink } from "react-router-dom"
 
 // safheha
-import SafheAsli from "./safheha/safhe_asli.jsx"
+import SafheAsli from "../safheha/safhe_asli.jsx";
+
 
 // komponentha
 import KomponentVorood from "./komponentha/komponent_vorood.jsx"
