@@ -1,90 +1,102 @@
 
-// src/App.jsx
-import React from "react"
-import { BrowserRouter as Router, Routes, Route, Navigate, NavLink } from "react-router-dom"
+import React, { useState } from "react"
+import { ersalPost } from "./komponent_api_helper"
+import KomponentVorood from "./komponent_vorood.jsx"
 
-// safheha
-import SafheAsli from "../safheha/safhe_asli.jsx";
+export default function KomponentSabtenam() {
+  const [email, setEmail] = useState("")
+  const [ramzOboor, setRamzOboor] = useState("")
+  const [payamSabtenam, setPayamSabtenam] = useState("")
+  const [darHaleErsaal, setDarHaleErsaal] = useState(false)
 
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-// komponentha
-import KomponentVorood from "./komponentha/komponent_vorood.jsx"
-import KomponentSabtenam from "./komponentha/komponent_sabtenam.jsx"
-import KomponentDashboard from "./komponentha/komponent_dashboard.jsx"
-import KomponentModir from "./komponentha/komponent_modir.jsx"
-import KomponentLogo from "./komponentha/komponent_logo.jsx"
-import KomponentAx from "./komponentha/komponent_ax.jsx"
-import KomponentZakhire from "./komponentha/komponent_zakhire.jsx"
+  const sabmitSabtenam = async (roydad) => {
+    roydad.preventDefault()
+    setPayamSabtenam("")
 
-export default function App() {
+    if (!email || !ramzOboor) {
+      setPayamSabtenam("لطفا همه فیلدها را پر کنید")
+      return
+    }
+
+    if (!emailPattern.test(email)) {
+      setPayamSabtenam("ایمیل نامعتبر است")
+      return
+    }
+
+    if (ramzOboor.length < 6) {
+      setPayamSabtenam("رمز عبور باید حداقل 6 کاراکتر باشد")
+      return
+    }
+
+    try {
+      setDarHaleErsaal(true)
+
+      // مسیر درست: /api/sabtenam
+      const natije = await ersalPost("/api/sabtenam", { email, ramzOboor })
+
+      if (!natije.ok) {
+        const payamServer = natije.data?.message || "خطا در ثبت‌نام"
+        setPayamSabtenam(payamServer)
+        setDarHaleErsaal(false)
+        return
+      }
+
+      localStorage.setItem("token", natije.data.token)
+      setPayamSabtenam("ثبت‌نام موفق")
+      setTimeout(() => {
+        window.location.href = "/dashboard"
+      }, 400)
+    } catch {
+      setPayamSabtenam("ارتباط با سرور مشکل دارد")
+    } finally {
+      setDarHaleErsaal(false)
+    }
+  }
+
   return (
-    <Router>
-      <div className="min-h-screen bg-gray-900 text-white flex flex-col">
-        <header className="p-4 bg-gray-800 shadow-lg flex items-center justify-between sticky top-0 z-50">
-          <KomponentLogo />
-          <nav className="flex gap-2">
-            <NavLink
-              to="/"
-              className={({ isActive }) =>
-                `dokme-gradient text-sm ${isActive ? "ring-2 ring-pink-400" : ""}`
-              }
-              end
-            >
-              خانه
-            </NavLink>
-            <NavLink
-              to="/vorood"
-              className={({ isActive }) =>
-                `dokme-gradient text-sm ${isActive ? "ring-2 ring-pink-400" : ""}`
-              }
-            >
-              ورود
-            </NavLink>
-            <NavLink
-              to="/sabtenam"
-              className={({ isActive }) =>
-                `dokme-gradient text-sm ${isActive ? "ring-2 ring-pink-400" : ""}`
-              }
-            >
-              ثبت‌نام
-            </NavLink>
-            <NavLink
-              to="/dashboard"
-              className={({ isActive }) =>
-                `dokme-gradient text-sm ${isActive ? "ring-2 ring-pink-400" : ""}`
-              }
-            >
-              داشبورد
-            </NavLink>
-            <NavLink
-              to="/modir"
-              className={({ isActive }) =>
-                `dokme-gradient text-sm ${isActive ? "ring-2 ring-pink-400" : ""}`
-              }
-            >
-              پنل مدیر
-            </NavLink>
-          </nav>
-        </header>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white">
+      <div className="w-96 kart-ziba">
+        <h2 className="text-3xl mb-6 text-cyan-400 text-center">ثبت‌نام کاربر</h2>
 
-        <main className="flex-1 p-6 animate-fadeIn">
-          <Routes>
-            <Route path="/" element={<SafheAsli />} />
-            <Route path="/vorood" element={<KomponentVorood />} />
-            <Route path="/sabtenam" element={<KomponentSabtenam />} />
-            <Route path="/dashboard" element={<KomponentDashboard />} />
-            <Route path="/modir" element={<KomponentModir />} />
-            <Route path="/ax" element={<KomponentAx />} />
-            <Route path="/zakhire" element={<KomponentZakhire />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </main>
+        <form onSubmit={sabmitSabtenam} className="flex flex-col space-y-4">
+          <input
+            type="email"
+            placeholder="ایمیل"
+            value={email}
+            onChange={(roydad) => setEmail(roydad.target.value)}
+            className="input-ziba focus:ring-cyan-400"
+          />
 
-        <footer className="p-6 bg-gray-800 text-center text-sm text-gray-400 border-t border-gray-700">
-          <p className="mb-2">© 2025 samaneh project - همه حقوق محفوظ است</p>
-          <p className="text-xs text-gray-500">ساخته شده توسط سمانه سماواتی</p>
-        </footer>
+          <input
+            type="password"
+            placeholder="رمز عبور"
+            value={ramzOboor}
+            onChange={(roydad) => setRamzOboor(roydad.target.value)}
+            className="input-ziba focus:ring-purple-500"
+          />
+
+          <button
+            type="submit"
+            disabled={darHaleErsaal}
+            className={`dokme-gradient ${darHaleErsaal ? "opacity-60 cursor-not-allowed" : ""}`}
+          >
+            {darHaleErsaal ? "در حال ثبت‌نام..." : "ثبت‌نام"}
+          </button>
+        </form>
+
+        {payamSabtenam && (
+          <p className="mt-4 text-center text-red-400">{payamSabtenam}</p>
+        )}
+
+        <div className="mt-6 text-center text-sm text-gray-400">
+          حساب داری؟{" "}
+          <a href="/vorood" className="text-cyan-400 hover:underline">
+            ورود
+          </a>
+        </div>
       </div>
-    </Router>
+    </div>
   )
 }
